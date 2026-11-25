@@ -1,0 +1,21 @@
+import { ArrowDown, ArrowUpRight, Bookmark, Check, ExternalLink, GraduationCap, Lightbulb, MapPin, ShieldCheck, Sparkles, X } from 'lucide-react';
+import type { CareerProfile } from '../types/profile';
+
+interface Props { profile: CareerProfile; saved: boolean; onSave: () => void; onClose: () => void; }
+
+export function ProfileDetail({ profile, saved, onSave, onClose }: Props) {
+  return (
+    <div className="modal-backdrop" role="presentation" onMouseDown={(event) => { if (event.target === event.currentTarget) onClose(); }}>
+      <section className="profile-modal" role="dialog" aria-modal="true" aria-labelledby="profile-modal-title">
+        <header className="modal-header"><div className="modal-brand"><span className="brand-mark small-mark"><Sparkles size={14} /></span><span>CAREER JOURNEY</span></div><div className="modal-header-actions"><button className={`secondary-button modal-save ${saved ? 'button-selected' : ''}`} onClick={onSave}><Bookmark size={15} fill={saved ? 'currentColor' : 'none'} />{saved ? 'Saved' : 'Save path'}</button><button className="icon-button" onClick={onClose} aria-label="Close profile"><X size={18} /></button></div></header>
+        <div className="modal-scroll"><div className="profile-hero"><div className={`profile-avatar large-avatar ${profile.avatarClass}`}>{profile.initials}</div><div className="modal-profile-copy"><div className="eyebrow">{profile.categories.join(' · ')}</div><h2 id="profile-modal-title">{profile.name}</h2><p>{profile.role} at <strong>{profile.company}</strong></p><div className="profile-location"><MapPin size={14} /> Career path · approx. {profile.years} years <span className="verified-inline"><ShieldCheck size={13} /> Sources included</span></div></div><div className="milestone-count"><strong>{profile.milestones.length}</strong><span>key moments</span></div></div>
+          <div className="profile-detail-intro"><p>{profile.summary}</p><div className="skills-line"><span className="skills-label">CAREER SKILLS</span>{profile.skills.map((skill) => <span className="skill-pill" key={skill}>{skill}</span>)}</div></div>
+          <div className="timeline-heading"><div><span className="section-kicker">THE JOURNEY</span><h3>Milestones & turning points</h3></div><span className="approx-label"><span /> Ages are approximate</span></div>
+          <div className="career-timeline">{profile.milestones.map((milestone, index) => <div className="timeline-entry" key={`${milestone.year}-${milestone.title}`}><div className={`timeline-marker ${index === 0 ? 'marker-start' : ''}`}>{milestone.icon === 'education' ? <GraduationCap size={15} /> : milestone.icon === 'decision' ? <Lightbulb size={14} /> : milestone.icon === 'achievement' ? <Check size={14} /> : <ArrowUpRight size={14} />}</div><div className="timeline-content"><div className="timeline-overline"><span>{milestone.year}</span><span className="timeline-age">Age ~{milestone.age}</span><span className={`evidence-tag evidence-${milestone.evidence.toLowerCase()}`}>{milestone.evidence === 'Reported' ? 'Reported' : milestone.evidence === 'Inferred' ? 'Age inferred' : 'Source-backed'}</span></div><h4>{milestone.title}</h4><p>{milestone.description}</p>{milestone.source && <a className="milestone-source" href={milestone.source} target="_blank" rel="noreferrer">View source <ExternalLink size={12} /></a>}</div></div>)}</div>
+          <div className="lesson-card"><div className="lesson-icon"><Lightbulb size={17} /></div><div><span className="section-kicker">A LESSON FROM THIS PATH</span><p>{profile.lesson}</p></div></div>
+          <div className="source-panel"><div className="source-panel-title"><ShieldCheck size={16} /><div><strong>Sources & context</strong><span>Use the references to explore further.</span></div></div><div className="source-links">{profile.sources.map((source) => <a key={source.url} href={source.url} target="_blank" rel="noreferrer">{source.name}<ArrowUpRight size={13} /></a>)}</div><p className="source-note"><ShieldCheck size={13} /> Public career details are summarized from cited sources. Ages are approximate, calculated from birth and event years where exact dates are unavailable. This is an illustrative career history, not a guaranteed formula.</p></div>
+        </div>
+      </section>
+    </div>
+  );
+}
